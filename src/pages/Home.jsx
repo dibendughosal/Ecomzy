@@ -28,17 +28,23 @@ const Home = () => {
   }, []);
 
   return (
-  <div className="flex justify-center items-center">
+  <div className="w-full">
     {
-      loading ? <Spinner/> : posts.length > 0 ? (<div>
+      loading ? <Spinner/> : posts.length > 0 ? (<div className="max-w-7xl min-h-[80vw] mx-auto flex flex-wrap justify-center items-center gap-x-5">
         {
           posts.map(item => (
             <Product key={item.id} item={item}/>
           ))
         }
-      </div>) : (<div><p>No Data Found</p></div>)
+      </div>) : (<div className="flex justify-center items-center"><p>No Data Found</p></div>)
     }
-
+    <br />
+    <footer className="w-full px-10 flex justify-between items-center bg-slate-900 text-white h-[7vw]">
+      <h1 className="text-xl font-bold">
+        &copy; All rights reserved 
+      </h1>
+      <p>Made with ❤</p>
+    </footer>
   </div>
   );
 };
