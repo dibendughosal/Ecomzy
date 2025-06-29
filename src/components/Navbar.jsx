@@ -1,36 +1,53 @@
 import { NavLink } from "react-router-dom";
 import logo from "../logo.png";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const {cart} = useSelector(state => state )
-  return (
-  <div className="w-full bg-slate-900">
-    <nav className="flex items-center justify-between h-20 max-w-6xl mx-auto">
-      <NavLink to='/'>
-        <div className="ml-5">
-          <img src={logo} alt="img" className="h-14"/>
-        </div>
-      </NavLink>
-      <div className="flex items-center gap-x-6 mr-5 font-medium text-slate-100">
-        <NavLink to='/'><p className="hover:scale-[1.05] transition duration-200 text-lg">Home</p></NavLink>
-        <NavLink to="/cart">
-        <div className="relative">
-          <FaShoppingCart className="hover:scale-[1.5] transition duration-200 text-2xl"/>
-            {
-              cart.length > 0 && 
-            <span 
-            className="absolute -top-1 -right-2 bg-green-600 text-xs w-5 h-5 flex justify-center items-center animate-bounce rounded-full"
-            >{cart.length}</span>
-            }
-        </div>
-          
-        </NavLink>
-      </div>
-    </nav>
-  </div>
+  const { cart } = useSelector(state => state);
 
+  return (
+    <div className="w-full bg-white shadow-md">
+      <nav className="flex items-center justify-between h-16 max-w-7xl mx-auto px-4">
+        {/* Logo */}
+        <NavLink to="/">
+          <img src={logo} alt="Logo" className="h-12 cursor-pointer" />
+        </NavLink>
+
+        {/* Search Bar */}
+        <div className="flex-1 mx-6 hidden md:flex">
+          <input 
+            type="text" 
+            placeholder="Search for products..." 
+            className="w-full border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Icons */}
+        <div className="flex items-center gap-x-6 text-gray-700">
+          <NavLink to="/login" className="hover:text-blue-600 transition">
+            <FaUser className="text-xl" />
+          </NavLink>
+          <NavLink to="/cart" className="relative hover:text-blue-600 transition">
+            <FaShoppingCart className="text-2xl" />
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-600 text-xs w-5 h-5 flex items-center justify-center rounded-full text-white">
+                {cart.length}
+              </span>
+            )}
+          </NavLink>
+        </div>
+      </nav>
+
+      {/* Mobile Search */}
+      <div className="md:hidden px-4 py-2">
+        <input 
+          type="text" 
+          placeholder="Search for products..." 
+          className="w-full border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+    </div>
   );
 };
 
