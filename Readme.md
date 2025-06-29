@@ -16,12 +16,11 @@ It follows a clean **monorepo structure** to keep backend & frontend isolated bu
 ## 📂 Project Structure
 
 /Ecomzy
-├── backend # Express / MongoDB REST API
-└── frontend # React + Tailwind UI
+
+├── backend     # Express / MongoDB REST API
+└── frontend    # React + Tailwind UI
 
 yaml
-Copy
-Edit
 
 ---
 
@@ -34,8 +33,7 @@ git clone https://github.com/dibendughosal/Ecomzy.git
 cd Ecomzy
 2️⃣ Install dependencies
 bash
-Copy
-Edit
+
 # Install backend dependencies
 cd backend
 npm install
@@ -48,24 +46,20 @@ npm install
 Create a file named .env inside the backend folder:
 
 ini
-Copy
-Edit
+
 MONGO_URI=mongodb://localhost:27017/ecomzy
 JWT_SECRET=yourSecretKey
 PORT=5000
 4️⃣ Run the application
 🚀 Start backend server
 bash
-Copy
-Edit
+
 cd backend
 npm run start
 Runs on: http://localhost:5000
 
 🚀 Start frontend app (in a new terminal)
 bash
-Copy
-Edit
 cd frontend
 npm run start
 Runs on: http://localhost:3000
@@ -82,26 +76,25 @@ Runs on: http://localhost:3000
 🖥 Mobile + Desktop: Fully responsive with Tailwind CSS.
 
 🛠️ Tech Stack
-Layer	Technology
+Layer	                Technology
 Frontend	React, Redux Toolkit, Tailwind CSS, react-hot-toast
-Backend	Node.js, Express, MongoDB, Mongoose, JWT, bcrypt
-Tools	Concurrently, dotenv, nodemon
+Backend 	Node.js, Express, MongoDB, Mongoose, JWT, bcrypt
+Tools	    Concurrently, dotenv, nodemon
 
 🗂️ API Endpoints
-Method	Endpoint	Description
-POST	/api/auth/register	Register new user
-POST	/api/auth/login	Login user, returns JWT
-GET	/api/user/me	Get current user by token
+Method      Endpoint            Description
+POST    /api/auth/register Register new user
+POST    /api/auth/login	   Login user, returns JWT
+GET     /api/user/me       Get current user by token
 
 🚀 Deployment
 🐳 MongoDB Atlas or local MongoDB
 
-🚀 Render / Railway / EC2 for backend
+🚀 Render for backend
 
 ⚡ Vercel / Netlify for frontend
 
-✅ License
-This project is licensed under the MIT License.
+
 
 🙌 Author
 Dibendu Ghosal
