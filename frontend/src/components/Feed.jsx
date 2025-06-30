@@ -41,7 +41,7 @@ const Feed = () => {
         <h2 className="text-2xl font-semibold mb-6">Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((item) => (
-            <Product key={item.id} item={item} />
+              <Product key={item.id} item={item} />
           ))}
         </div>
       </div>

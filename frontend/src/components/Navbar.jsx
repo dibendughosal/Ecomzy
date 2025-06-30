@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../logo.png";
-import { FaShoppingCart, FaUser, FaSignOutAlt, FaBox } from "react-icons/fa";
+import { FaShoppingCart, FaUser, FaSignOutAlt, FaBox, FaChevronDown } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/authSlice";
 
@@ -11,6 +11,18 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [dropdown, setDropdown] = useState(false);
+  const dropdownRef = useRef();
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="w-full bg-white shadow-md">
@@ -27,19 +39,30 @@ const Navbar = () => {
           />
         </div>
 
-        <div className="flex items-center gap-x-6 text-gray-700 relative">
+        <div className="flex items-center gap-x-6 text-gray-700 relative" ref={dropdownRef}>
+          {/* User dropdown */}
           <div 
-            className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition relative"
-            onMouseEnter={() => setDropdown(true)}
-            onMouseLeave={() => setDropdown(false)}
+            onClick={() => setDropdown(!dropdown)}
+            className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition"
           >
             <FaUser className="text-xl" />
             <span className="hidden sm:inline font-medium">
               {user ? user.name.split(" ")[0] : "Guest"}
             </span>
+            <FaChevronDown 
+              className={`ml-1 transition-transform duration-200 ${dropdown ? "rotate-180" : "rotate-0"}`}
+            />
+          </div>
 
-            {dropdown && user && (
-              <div className="absolute top-8 right-0 w-40 bg-white shadow-lg rounded-md py-2 z-50">
+          {/* Animated dropdown */}
+          <div
+            className={`absolute top-10 right-0 w-44 bg-white shadow-lg rounded-md py-2 z-50
+              transform transition-all duration-200 origin-top
+              ${dropdown ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"}
+            `}
+          >
+            {user ? (
+              <>
                 <NavLink to="/profile" className="flex items-center px-4 py-2 hover:bg-gray-100">
                   <FaUser className="mr-2" /> Profile
                 </NavLink>
@@ -50,15 +73,26 @@ const Navbar = () => {
                   onClick={() => {
                     dispatch(logout());
                     navigate("/login");
+                    setDropdown(false);
                   }}
                   className="flex items-center px-4 py-2 w-full text-left hover:bg-gray-100"
                 >
                   <FaSignOutAlt className="mr-2" /> Logout
                 </button>
-              </div>
+              </>
+            ) : (
+              <>
+                <NavLink to="/login" className="flex items-center px-4 py-2 hover:bg-gray-100">
+                  Login
+                </NavLink>
+                <NavLink to="/register" className="flex items-center px-4 py-2 hover:bg-gray-100">
+                  Register
+                </NavLink>
+              </>
             )}
           </div>
 
+          {/* Cart */}
           <NavLink to="/cart" className="relative hover:text-blue-600 transition">
             <FaShoppingCart className="text-2xl" />
             {cart.length > 0 && (

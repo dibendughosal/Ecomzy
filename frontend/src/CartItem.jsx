@@ -21,7 +21,7 @@ const CartItem = ({item, itemIndex}) => {
           <h1 className="text-xl text-slate-700 font-semibold">{item.title}</h1>
           <h1 className="text-base font-medium text-slate-700">{item.description.split(" ").splice(0,15).join(" ") +"..."}</h1>
           <div className="flex w-full p-4 items-center justify-between">
-            <p className="font-bold text-lg text-green-600">{item.price}</p>
+            <p className="font-bold text-lg text-green-600">${item.price}</p>
             <div onClick={removeFromCart} className="bg-red-200 rounded-full p-3 mr-3 cursor-pointer hover:bg-red-400 group">
               <FcDeleteDatabase className="text-red-800 group-hover:text-white"/>
             </div>

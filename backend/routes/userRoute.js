@@ -17,8 +17,8 @@ router.post("/register", async (req, res) => {
     user = new User({ name, email, password: hashedPassword });
     await user.save();
 
-    const token = jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET);
-    res.json({ token, user: { name: user.name, email: user.email } });
+    const token = jwt.sign({ id: user._id, name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET);
+    res.json({ token, user: { name: user.name, email: user.email, role: user.role } });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -32,8 +32,8 @@ router.post("/login", async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password)))
       return res.status(400).json({ msg: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET);
-    res.json({ token, user: { name: user.name, email: user.email } });
+    const token = jwt.sign({ id: user._id, name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET);
+    res.json({ token, user: { name: user.name, email: user.email, role: user.role } });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -41,7 +41,7 @@ router.post("/login", async (req, res) => {
 
 // Current user
 router.get("/me", auth, (req, res) => {
-  res.json(req.user);
+  res.json(req.user); // From decoded JWT
 });
 
 export default router;

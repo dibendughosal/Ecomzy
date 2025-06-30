@@ -20,7 +20,7 @@ const Login = () => {
         body: JSON.stringify({ email, password })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Login failed");
+      if (!res.ok) throw new Error(data.msg || "Login failed");
 
       dispatch(setAuth({ user: data.user, token: data.token }));
       toast.success("Logged in successfully");

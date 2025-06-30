@@ -21,11 +21,11 @@ const Register = () => {
         body: JSON.stringify({ name, email, password })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Register failed");
+      if (!res.ok) throw new Error(data.msg || "Register failed");
 
       dispatch(setAuth({ user: data.user, token: data.token }));
       toast.success("Registered successfully");
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       toast.error(err.message);
     }
