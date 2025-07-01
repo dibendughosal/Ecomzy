@@ -44,6 +44,20 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+// BULK insert (admin only)
+router.post("/bulk", auth, async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ msg: "Access denied. Admins only." });
+  }
+
+  try {
+    const products = await Product.insertMany(req.body);
+    res.status(201).json({ msg: "Products inserted", products });
+  } catch (err) {
+    res.status(400).json({ msg: err.message });
+  }
+});
+
 // PUT /products/:id (admin only)
 router.put("/:id", auth, async (req, res) => {
   if (req.user.role !== "admin") {

@@ -25,7 +25,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="w-full bg-white shadow-md">
+    <div className="w-full bg-white shadow-md sticky top-0 z-1000">
       <nav className="flex items-center justify-between h-16 max-w-7xl mx-auto px-4">
         <NavLink to="/home">
           <img src={logo} alt="Logo" className="h-12 cursor-pointer" />

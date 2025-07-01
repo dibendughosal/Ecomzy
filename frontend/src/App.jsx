@@ -14,11 +14,9 @@ import AdminDashboard from "./components/AdminDashboard";
 import ProductList from "./components/ProductList";
 import PrivateRoute from "./components/PrivateRoute";
 import ProductDetails from "./pages/ProductDetails";
-import AdminLogin from "./pages/AdminLogin";
-import Feed from "./components/Feed";
 
 const App = () => {
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { token } = useSelector(state => state.auth);
 
   useEffect(() => {
@@ -33,34 +31,28 @@ const App = () => {
 
   return (
     <div className="w-full h-full">
-      <div>
-        <Navbar/>
-      </div>
-      <Routes>
-        <Route path= "/" element={<Home/>} />
-        <Route path= "/home" element={<Home/>} />
-        <Route path="/cart" element={<Cart/>}/>
-        <Route path="/register" element={<Register/>}/>
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/profile" element={<Profile/>}/>
-        <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/products" element={<ProductList />} />
-        <Route path="/add-product" element={
-            <PrivateRoute><AddProduct /></PrivateRoute>
-        }/>
-      <Route path="/admin" element={
-        <PrivateRoute requiredRole="admin"><AdminDashboard /></PrivateRoute>
-      }/>
+      <Navbar />
+      
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/products" element={<ProductList />} />
 
-      <Route path="/admin-login" element={<AdminLogin />} />
-      <Route path="/admin" element={
-        <PrivateRoute requiredRole="admin"><AdminDashboard /></PrivateRoute>
-      } />
-
-      </Routes>
-      <Footer/>
+          <Route path="/add-product" element={
+            <PrivateRoute requiredRole="admin"><AddProduct /></PrivateRoute>
+          } />
+          <Route path="/admin" element={
+            <PrivateRoute requiredRole="admin"><AdminDashboard /></PrivateRoute>
+          } />
+        </Routes>
+      <Footer />
     </div>
-  )
+  );
 };
 
 export default App;

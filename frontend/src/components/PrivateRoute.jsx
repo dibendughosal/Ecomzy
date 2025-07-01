@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const PrivateRoute = ({ children, requiredRole }) => {
   const { token, user } = useSelector(state => state.auth);

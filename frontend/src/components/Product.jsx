@@ -22,7 +22,7 @@ const Product = ({ item }) => {
 
   return (
     <NavLink to={`/product/${item._id}`}>
-      <div className="relative mx-auto">
+      <div className="relative mx-auto -z-10">
         <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">
           Save 15%
         </div>
@@ -30,11 +30,11 @@ const Product = ({ item }) => {
         <div className="w-[300px] p-4 border border-gray-200 rounded-xl flex flex-col gap-y-3 items-center 
           hover:shadow-xl hover:scale-[1.05] transition duration-300 bg-white">
 
-          <img src={item.image} alt={item.name} 
+          <img src={item.image} alt={item.title} 
             className="h-[180px] object-contain rounded" />
 
           <div className="w-full text-center">
-            <h3 className="font-semibold text-gray-800 line-clamp-1">{item.name}</h3>
+            <h3 className="font-semibold text-gray-800 line-clamp-1">{item.title}</h3>
             <p className="text-gray-500 text-sm mt-1 line-clamp-2">{item.description}</p>
           </div>
 
@@ -44,7 +44,7 @@ const Product = ({ item }) => {
             <FaStar className="text-yellow-500 text-sm" />
             <FaStar className="text-yellow-500 text-sm" />
             <FaStarHalfAlt className="text-yellow-500 text-sm" />
-            <span className="text-gray-600 text-xs ml-1">(4.5)</span>
+            <span className="text-gray-600 text-xs ml-1">(item.rating.rate)</span>
           </div>
 
           <div className="flex justify-between items-center w-full mt-2">

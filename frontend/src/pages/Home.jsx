@@ -3,82 +3,76 @@ import Spinner from "../components/Spinner";
 import Product from "../components/Product";
 
 const Home = () => {
-  const API_URL = "https://fakestoreapi.com/products";
   const [loading, setLoading] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [displayPosts, setDisplayPosts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState("");
   const [category, setCategory] = useState("All");
   const [priceRanges, setPriceRanges] = useState([]);
   const [ratingFilter, setRatingFilter] = useState(0);
 
-  async function fetchProductData() {
-    setLoading(true);
-    try {
-      const response = await fetch(API_URL);
-      const data = await response.json();
-      setPosts(data);
-      setDisplayPosts(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const categories = ["All", "electronics", "jewelery", "men's clothing", "women's clothing"];
 
   useEffect(() => {
-    fetchProductData();
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("http://localhost:5000/products");
+        const data = await res.json();
+        setAllProducts(data);
+        setFilteredProducts(data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
-  // filtering and sorting
   useEffect(() => {
-    let filtered = [...posts];
+    let filtered = [...allProducts];
 
-    // category filter
     if (category !== "All") {
       filtered = filtered.filter(item => item.category === category);
     }
 
-    // price ranges filter
     if (priceRanges.length > 0) {
-      filtered = filtered.filter(item => {
-        return priceRanges.some(range => {
+      filtered = filtered.filter(item => 
+        priceRanges.some(range => {
           if (range === "under500") return item.price < 500;
           if (range === "500-1000") return item.price >= 500 && item.price <= 1000;
           if (range === "above1000") return item.price > 1000;
           return true;
-        });
-      });
+        })
+      );
     }
 
-    // rating filter (fakestoreapi doesn't have ratings, but let's pretend by using id % 5)
     if (ratingFilter > 0) {
-      filtered = filtered.filter(item => (item.id % 5) >= ratingFilter);
+      filtered = filtered.filter(item => item.rating?.rate >= ratingFilter);
     }
 
-    // sort
     if (sortOption === "low-to-high") {
       filtered.sort((a, b) => a.price - b.price);
     } else if (sortOption === "high-to-low") {
       filtered.sort((a, b) => b.price - a.price);
     } else if (sortOption === "rating") {
-      filtered.sort((a, b) => (b.id % 5) - (a.id % 5)); // fake rating sort
+      filtered.sort((a, b) => (b.rating?.rate || 0) - (a.rating?.rate || 0));
     }
 
-    setDisplayPosts(filtered);
-  }, [sortOption, category, priceRanges, ratingFilter, posts]);
+    setFilteredProducts(filtered);
+  }, [category, priceRanges, ratingFilter, sortOption, allProducts]);
 
-  const categories = ["All", "electronics", "jewelery", "men's clothing", "women's clothing"];
-
-  const handlePriceChange = (range) => {
+  const togglePriceRange = (range) => {
     setPriceRanges(prev =>
       prev.includes(range) ? prev.filter(r => r !== range) : [...prev, range]
     );
   };
 
   return (
-    <div className="max-w-7xl flex flex-col md:flex-row gap-6 px-4 py-8">
-      {/* Left panel */}
+    <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-6 px-4 py-8">
+      {/* Sidebar */}
       <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-gray-300 pr-4 pb-6 md:pb-0">
         <h3 className="text-lg font-bold mb-4">Categories</h3>
         <ul className="space-y-2 mb-6">
@@ -97,38 +91,36 @@ const Home = () => {
 
         <h3 className="text-lg font-bold mb-3">Price</h3>
         <div className="space-y-2 mb-6">
-          <label className="flex items-center">
-            <input type="checkbox" className="mr-2"
-              checked={priceRanges.includes("under500")}
-              onChange={() => handlePriceChange("under500")}
-            />
-            Under ₹500
-          </label>
-          <label className="flex items-center">
-            <input type="checkbox" className="mr-2"
-              checked={priceRanges.includes("500-1000")}
-              onChange={() => handlePriceChange("500-1000")}
-            />
-            ₹500 - ₹1000
-          </label>
-          <label className="flex items-center">
-            <input type="checkbox" className="mr-2"
-              checked={priceRanges.includes("above1000")}
-              onChange={() => handlePriceChange("above1000")}
-            />
-            Above ₹1000
-          </label>
+          {["under500", "500-1000", "above1000"].map(range => (
+            <label key={range} className="flex items-center">
+              <input
+                type="checkbox"
+                className="mr-2"
+                checked={priceRanges.includes(range)}
+                onChange={() => togglePriceRange(range)}
+              />
+              {{
+                under500: "Under ₹500",
+                "500-1000": "₹500 - ₹1000",
+                above1000: "Above ₹1000"
+              }[range]}
+            </label>
+          ))}
         </div>
 
         <h3 className="text-lg font-bold mb-3">Ratings</h3>
         <div className="space-y-2">
           {[4,3,2,1].map(star => (
-            <div key={star} className="flex items-center cursor-pointer" onClick={() => setRatingFilter(star)}>
+            <div
+              key={star}
+              className="flex items-center cursor-pointer"
+              onClick={() => setRatingFilter(star)}
+            >
               <div className="flex">
                 {Array.from({length: star}, (_, i) => (
                   <span key={i} className="text-yellow-500">★</span>
                 ))}
-                {Array.from({length: 5-star}, (_, i) => (
+                {Array.from({length: 5 - star}, (_, i) => (
                   <span key={i} className="text-gray-300">★</span>
                 ))}
               </div>
@@ -138,7 +130,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Right panel */}
+      {/* Main Content */}
       <div className="flex-1">
         <div className="flex justify-end mb-4">
           <select
@@ -155,14 +147,16 @@ const Home = () => {
 
         {loading ? (
           <Spinner />
-        ) : displayPosts.length > 0 ? (
+        ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayPosts.map(item => (
-              <Product key={item.id} item={item} />
+            {filteredProducts.map(item => (
+              <Product key={item._id} item={item} />
             ))}
           </div>
         ) : (
-          <div className="flex justify-center items-center"><p>No Data Found</p></div>
+          <div className="flex justify-center items-center">
+            <p>No Products Found</p>
+          </div>
         )}
       </div>
     </div>
