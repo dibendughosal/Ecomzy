@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaTwitter, FaArrowRight } from "react-icons/fa";
 
@@ -31,7 +30,7 @@ const Footer = () => {
           <h4 className="text-lg font-semibold mb-4 text-white">Support</h4>
           <ul className="space-y-3">
             <li><Link to="/faq" className="flex items-center hover:text-blue-400"><FaArrowRight className="mr-2" /> FAQ</Link></li>
-            <li><Link to="/contact" className="flex items-center hover:text-blue-400"><FaArrowRight className="mr-2" /> Help Center</Link></li>
+            <li><Link to="/help-center" className="flex items-center hover:text-blue-400"><FaArrowRight className="mr-2" /> Help Center</Link></li>
           </ul>
         </div>
 

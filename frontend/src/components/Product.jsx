@@ -31,7 +31,7 @@ const Product = ({ item }) => {
           hover:shadow-xl hover:scale-[1.05] transition duration-300 bg-white">
 
           <img src={item.image} alt={item.title} 
-            className="h-[180px] object-contain rounded" />
+            className="h-[180px] object-contain rounded pt-5" />
 
           <div className="w-full text-center">
             <h3 className="font-semibold text-gray-800 line-clamp-1">{item.title}</h3>
@@ -44,7 +44,7 @@ const Product = ({ item }) => {
             <FaStar className="text-yellow-500 text-sm" />
             <FaStar className="text-yellow-500 text-sm" />
             <FaStarHalfAlt className="text-yellow-500 text-sm" />
-            <span className="text-gray-600 text-xs ml-1">(item.rating.rate)</span>
+            <span className="text-gray-600 text-xs ml-1">(4.5)</span>
           </div>
 
           <div className="flex justify-between items-center w-full mt-2">
