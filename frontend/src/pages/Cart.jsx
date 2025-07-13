@@ -1,57 +1,56 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
-import CartItem from '../CartItem'
-import { useEffect, useState } from "react";
+import CartItem from '../CartItem';
+import { clearCart } from "../redux/Slices/CartSlice";
 
 const Cart = () => {
-  const {cart} = useSelector((state => state))
-  const [totalAmount,setTotalAmount] = useState(0);
+  const { cart } = useSelector(state => state);
+  const dispatch = useDispatch();
 
-  useEffect(()=> {
-    setTotalAmount( cart.reduce( (acc,curr) => acc + curr.price,0) );
-  },[cart])
+  const totalItems = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
+  const totalAmount = cart.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
 
   return (
-    <div>
-      {
-        cart.length > 0 ?
-         (
-          <div className="flex w-[80%] mx-auto">
-            <div>
-              {
-                cart.map((item, idx) => {
-                  return <CartItem key={item.id} item={item} itemIndex={idx}/>
-
-                })
-              }
-            </div>
-
-            <div className="flex flex-col gap-5 my-14 justify-between h-full">
-
-              <div>
-                <h1 className="font-semibold text-xl text-green-800">Your Cart</h1>
-                <h2 className="font-semibold text-5xl text-green-700 -mt-1 uppercase">Summary</h2>
-              </div>
-                <p className="text-xl">
-                  <span className="text-gray-700 font-semibold text-xl">Total Items: {cart.length}</span>
-                </p>
-
-              <div className="text-xl">
-                <p className="text-gray-700 font-semibold">Total Amount: <span className="text-black font-bold text-xl">${totalAmount}</span></p>
-                <button className="bg-green-700 hover:bg-purple-50 rounded-lg text-white transition duration-300 mt-5 ease-linear border-2 border-green-600 font-bold hover:text-green-700 p-3 text-xl w-full">Checkout Now</button>
-              </div>
-
-            </div>
+    <div className="min-h-[80vh] py-10 px-4 max-w-7xl mx-auto">
+      {cart.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Cart items */}
+          <div className="md:col-span-2">
+            {cart.map(item => (
+              <CartItem key={item.id} item={item} />
+            ))}
           </div>
-         ) : 
-         (
-          <div className="min-h-[80vh] flex flex-col items-center justify-center">
-              <p className="font-semibold mb-2 text-xl text-gray-700">Your cart is empty!</p>
-              <NavLink to='/'><button className="bg-green-600 hover:bg-purple-50 rounded-lg text-white transition duration-300 ease-linear mt-5 border-2 border-green-600 font-semibold hover:text-green-700 p-3 px-10 tracking-wider uppercase
-">Shop now</button></NavLink>
+
+          {/* Summary */}
+          <div className="bg-white shadow rounded p-6 h-fit sticky top-24">
+            <h2 className="text-2xl font-bold mb-4 text-green-700">Summary</h2>
+            <p className="text-lg mb-2">
+              Total Items: <span className="font-semibold">{totalItems}</span>
+            </p>
+            <p className="text-xl font-semibold mb-6">
+              Total Amount: <span className="text-green-700">${totalAmount.toFixed(2)}</span>
+            </p>
+            <button className="bg-green-700 hover:bg-green-800 w-full text-white py-3 rounded mb-4 transition">
+              Checkout Now
+            </button>
+            <button 
+              onClick={() => dispatch(clearCart())}
+              className="border border-red-600 text-red-600 hover:bg-red-50 w-full py-2 rounded transition"
+            >
+              Clear Cart
+            </button>
           </div>
-         )
-      }
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center h-full py-20">
+          <p className="font-semibold mb-4 text-xl text-gray-700">Your cart is empty!</p>
+          <NavLink to="/">
+            <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded transition tracking-wider uppercase">
+              Shop Now
+            </button>
+          </NavLink>
+        </div>
+      )}
     </div>
   );
 };

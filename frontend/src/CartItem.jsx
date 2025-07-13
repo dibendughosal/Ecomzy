@@ -1,33 +1,59 @@
-import { FcDeleteDatabase } from "react-icons/fc";
-import { remove } from "./redux/Slices/CartSlice";
+import React from "react";
 import { useDispatch } from "react-redux";
-import toast from "react-hot-toast";
+import { remove, add } from "../src/redux/Slices/CartSlice";
 
-const CartItem = ({item, itemIndex}) => {
+const CartItem = ({ item }) => {
   const dispatch = useDispatch();
-  const removeFromCart = () => {
-    dispatch(remove(item.id))
-    toast.error("Item removed");
-  }
-  console.log(item)
+
+  const incrementQty = () => {
+    dispatch(add({ ...item, quantity: 1 }));
+  };
+
+  const decrementQty = () => {
+    if (item.quantity > 1) {
+      dispatch({
+        type: "cart/decrementQty",
+        payload: item.id,
+      });
+    } else {
+      dispatch(remove(item.id));
+    }
+  };
+
   return (
-    <div className="flex items-center p-2 md:p-5 
-">
-      <div key={itemIndex} className="flex justify-between gap-x-5 mt-2 mb-2 md:mx-5 border-b-2 py-5 border-gray-300 w-[600px]">
+    <div className="flex items-center justify-between p-4 mb-3 rounded shadow hover:shadow-lg transition">
+      <div className="flex items-center gap-4">
+        <img src={item.image} alt={item.title} className="w-20 h-20 object-contain" />
         <div>
-          <img src={item.image} alt="item-image" className="w-[200px]"/>
-        </div>
-        <div className="flex flex-col gap-5 items-center md:p-3">
-          <h1 className="text-xl text-slate-700 font-semibold">{item.title}</h1>
-          <h1 className="text-base font-medium text-slate-700">{item.description.split(" ").splice(0,15).join(" ") +"..."}</h1>
-          <div className="flex w-full p-4 items-center justify-between">
-            <p className="font-bold text-lg text-green-600">${item.price}</p>
-            <div onClick={removeFromCart} className="bg-red-200 rounded-full p-3 mr-3 cursor-pointer hover:bg-red-400 group">
-              <FcDeleteDatabase className="text-red-800 group-hover:text-white"/>
-            </div>
-          </div>
+          <p className="font-semibold">{item.title}</p>
+          <p className="text-gray-600">${item.price}</p>
         </div>
       </div>
+
+      {/* Quantity controls */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={decrementQty}
+          className="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300"
+        >
+          −
+        </button>
+        <span className="min-w-[24px] text-center">{item.quantity}</span>
+        <button
+          onClick={incrementQty}
+          className="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300"
+        >
+          +
+        </button>
+      </div>
+
+      {/* Remove */}
+      <button
+        onClick={() => dispatch(remove(item.id))}
+        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+      >
+        Remove
+      </button>
     </div>
   );
 };
