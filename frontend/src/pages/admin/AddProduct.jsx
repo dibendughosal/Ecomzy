@@ -28,17 +28,19 @@ const AddProduct = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name.startsWith("rating.")) {
       const field = name.split(".")[1];
       setFormData(prev => ({
         ...prev,
-        rating: { ...prev.rating, [field]: field === "rate" || field === "count" ? parseFloat(value) : value }
+        rating: { 
+          ...prev.rating, 
+          [field]: isNaN(Number(value)) ? 0 : Number(value) 
+        }
       }));
     } else {
       setFormData(prev => ({
         ...prev,
-        [name]: name === "price" ? parseFloat(value) : value
+        [name]: name === "price" ? (isNaN(Number(value)) ? 0 : Number(value)) : value
       }));
     }
   };
@@ -46,7 +48,7 @@ const AddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/products", {
+      const res = await fetch("http://localhost:5000/api/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,6 +61,8 @@ const AddProduct = () => {
 
       toast.success("Product added successfully!");
       navigate("/admin");
+      // or clear form for adding more
+      // setFormData({ title:"", price:"", description:"", category:"", image:"", rating: {rate:0, count:0}});
     } catch (err) {
       toast.error(err.message);
     }
@@ -71,7 +75,6 @@ const AddProduct = () => {
     >
       <h2 className="text-2xl font-bold text-center mb-6">Add New Product</h2>
 
-      {/* Product fields */}
       {["title", "price", "description", "category", "image"].map((field) => (
         <div key={field}>
           <label className="block text-sm font-medium mb-1 capitalize">{field}</label>
@@ -81,12 +84,11 @@ const AddProduct = () => {
             value={formData[field]}
             onChange={handleChange}
             required
-            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow"
           />
         </div>
       ))}
 
-      {/* Rating fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1">Rating Rate</label>
@@ -99,7 +101,7 @@ const AddProduct = () => {
             value={formData.rating.rate}
             onChange={handleChange}
             required
-            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow"
           />
         </div>
         <div>
@@ -111,7 +113,7 @@ const AddProduct = () => {
             value={formData.rating.count}
             onChange={handleChange}
             required
-            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow"
           />
         </div>
       </div>

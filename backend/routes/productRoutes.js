@@ -1,90 +1,74 @@
 import express from "express";
 import Product from "../models/products.js";
 import auth from "../middleware/auth.js";
+import isAdmin from "../middleware/isAdmin.js";
 
 const router = express.Router();
 
-// GET 
+// GET all products
 router.get("/", async (req, res) => {
-  const { page = 1, limit = 8, category } = req.query;
   try {
-    const query = category ? { category } : {};
-    const products = await Product.find(query)
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
+    const products = await Product.find();
     res.json(products);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    console.error("Error fetching products:", err.message);
+    res.status(500).json({ msg: "Server error" });
   }
 });
 
-// GET /products/:id
-router.get("/:id", async (req, res) => {
+// POST new product (admin only)
+router.post("/", auth, isAdmin, async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ msg: "Product not found" });
-    res.json(product);
+    let { title, price, description, category, image, rating } = req.body;
+
+    // fallback to ensure valid product shape
+    if (!rating) {
+      rating = { rate: 0, count: 0 };
+    }
+    price = parseFloat(price) || 0;
+
+    const product = new Product({
+      title,
+      price,
+      description,
+      category,
+      image,
+      rating
+    });
+
+    await product.save();
+    res.status(201).json(product);
   } catch (err) {
-    res.status(500).json({ msg: err.message });
+    console.error("Failed to save product:", err.message);
+    res.status(400).json({ msg: "Failed to save product", error: err.message });
   }
 });
 
-// POST /products (admin only)
-router.post("/", auth, async (req, res) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ msg: "Access denied. Admins only." });
-  }
-
+// PUT update product (admin only)
+router.put("/:id", auth, isAdmin, async (req, res) => {
   try {
-    const newProduct = new Product(req.body);
-    const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!updated) return res.status(404).json({ msg: "Product not found" });
+    res.json(updated);
   } catch (err) {
-    res.status(400).json({ msg: err.message });
+    console.error("Failed to update product:", err.message);
+    res.status(400).json({ msg: "Failed to update product", error: err.message });
   }
 });
 
-// BULK insert (admin only)
-router.post("/bulk", auth, async (req, res) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ msg: "Access denied. Admins only." });
-  }
-
+// DELETE product (admin only)
+router.delete("/:id", auth, isAdmin, async (req, res) => {
   try {
-    const products = await Product.insertMany(req.body);
-    res.status(201).json({ msg: "Products inserted", products });
+    const deleted = await Product.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ msg: "Product not found" });
+    res.json({ msg: "Product deleted" });
   } catch (err) {
-    res.status(400).json({ msg: err.message });
-  }
-});
-
-// PUT /products/:id (admin only)
-router.put("/:id", auth, async (req, res) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ msg: "Access denied. Admins only." });
-  }
-
-  try {
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!updatedProduct) return res.status(404).json({ msg: "Product not found" });
-    res.json(updatedProduct);
-  } catch (err) {
-    res.status(400).json({ msg: err.message });
-  }
-});
-
-// DELETE /products/:id (admin only)
-router.delete("/:id", auth, async (req, res) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ msg: "Access denied. Admins only." });
-  }
-
-  try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-    if (!deletedProduct) return res.status(404).json({ msg: "Product not found" });
-    res.json({ msg: "Product deleted successfully." });
-  } catch (err) {
-    res.status(500).json({ msg: err.message });
+    console.error("Failed to delete product:", err.message);
+    res.status(500).json({ msg: "Failed to delete product", error: err.message });
   }
 });
 

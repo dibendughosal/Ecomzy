@@ -17,7 +17,7 @@ const Home = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:5000/products");
+        const res = await fetch("http://localhost:5000/api/products");
         const data = await res.json();
         setAllProducts(data);
         setFilteredProducts(data);

@@ -38,7 +38,14 @@ const Navbar = () => {
             className="w-full border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+        <div className="flex items-center gap-x-6 text-gray-700 relative pr-4">
+          {user?.role === "admin" && (
+            <NavLink to="/admin" className="hover:underline">
+              Admin Dashboard
+            </NavLink>
+          )}
 
+        </div>
         <div className="flex items-center gap-x-6 text-gray-700 relative" ref={dropdownRef}>
           {/* User dropdown */}
           <div 

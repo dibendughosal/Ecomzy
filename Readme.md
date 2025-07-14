@@ -5,7 +5,7 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Database-green)
 
 Ecomzy is a full-stack ecommerce platform built with:
-- 🚀 **React + Tailwind CSS** frontend
+- 🚀 **React + Tailwind CSS + Redux** frontend
 - 🔥 **Express + MongoDB** backend
 - 💳 Basic cart, authentication (JWT), user profile & orders dropdown.
 
