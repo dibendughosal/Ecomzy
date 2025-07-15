@@ -10,7 +10,7 @@ const Product = ({ item }) => {
 
   const addToCart = (e) => {
     e.stopPropagation();
-    dispatch(add(item));
+    dispatch(add({ ...item, quantity: 1 }));
     toast.success("Item added to Cart");
   };
 
@@ -30,12 +30,19 @@ const Product = ({ item }) => {
         <div className="w-[300px] p-4 border border-gray-200 rounded-xl flex flex-col gap-y-3 items-center 
           hover:shadow-xl hover:scale-[1.05] transition duration-300 bg-white">
 
-          <img src={item.image} alt={item.title} 
-            className="h-[180px] object-contain rounded pt-5" />
+          <img 
+            src={item.image} 
+            alt={item.title} 
+            className="h-[180px] object-contain rounded pt-5" 
+          />
 
           <div className="w-full text-center">
-            <h3 className="font-semibold text-gray-800 line-clamp-1">{item.title}</h3>
-            <p className="text-gray-500 text-sm mt-1 line-clamp-2">{item.description}</p>
+            <h3 className="font-semibold text-gray-800 line-clamp-1">
+              {item.title}
+            </h3>
+            <p className="text-gray-500 text-sm mt-1 line-clamp-2">
+              {item.description}
+            </p>
           </div>
 
           <div className="flex items-center justify-center gap-1 mt-2">

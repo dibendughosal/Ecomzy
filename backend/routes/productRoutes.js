@@ -16,12 +16,24 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET single product by ID
+router.get("/:id", async (req, res) => {
+  console.log("Fetching product id:", req.params.id);
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ msg: "Product not found" });
+    res.json(product);
+  } catch (err) {
+    console.error("Error fetching product:", err.message);
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+});
+
 // POST new product (admin only)
 router.post("/", auth, isAdmin, async (req, res) => {
   try {
     let { title, price, description, category, image, rating } = req.body;
 
-    // fallback to ensure valid product shape
     if (!rating) {
       rating = { rate: 0, count: 0 };
     }

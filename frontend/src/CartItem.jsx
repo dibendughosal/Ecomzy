@@ -1,56 +1,58 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { remove, add } from "../src/redux/Slices/CartSlice";
+import { add, decrementQty, remove } from "./redux/Slices/CartSlice";
+import toast from "react-hot-toast";
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch();
 
-  const incrementQty = () => {
+  const handleIncrement = () => {
     dispatch(add({ ...item, quantity: 1 }));
   };
 
-  const decrementQty = () => {
+  const handleDecrement = () => {
     if (item.quantity > 1) {
-      dispatch({
-        type: "cart/decrementQty",
-        payload: item.id,
-      });
+      dispatch(decrementQty(item._id));
     } else {
-      dispatch(remove(item.id));
+      dispatch(remove(item._id));
+      toast.error("Item removed from cart");
     }
   };
 
+  const handleRemove = () => {
+    dispatch(remove(item._id));
+    toast.error("Item removed from cart");
+  };
+
   return (
-    <div className="flex items-center justify-between p-4 mb-3 rounded shadow hover:shadow-lg transition">
+    <div className="flex items-center justify-between p-4 border rounded shadow-sm bg-white">
       <div className="flex items-center gap-4">
-        <img src={item.image} alt={item.title} className="w-20 h-20 object-contain" />
+        <img src={item.image} alt={item.title} className="h-20 w-20 object-contain rounded" />
         <div>
-          <p className="font-semibold">{item.title}</p>
-          <p className="text-gray-600">${item.price}</p>
+          <h3 className="font-semibold text-gray-800">{item.title}</h3>
+          <p className="text-sm text-gray-600">${item.price.toFixed(2)} each</p>
         </div>
       </div>
 
-      {/* Quantity controls */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <button
-          onClick={decrementQty}
-          className="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300"
-        >
-          −
-        </button>
-        <span className="min-w-[24px] text-center">{item.quantity}</span>
+          onClick={handleDecrement}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+        >-</button>
+        <span className="font-semibold">{item.quantity}</span>
         <button
-          onClick={incrementQty}
-          className="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300"
-        >
-          +
-        </button>
+          onClick={handleIncrement}
+          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+        >+</button>
       </div>
 
-      {/* Remove */}
+      <div className="text-green-700 font-bold w-24 text-center">
+        ${(item.price * item.quantity).toFixed(2)}
+      </div>
+
       <button
-        onClick={() => dispatch(remove(item.id))}
-        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+        onClick={handleRemove}
+        className="text-red-600 hover:underline ml-2 text-sm"
       >
         Remove
       </button>
